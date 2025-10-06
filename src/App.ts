@@ -46,7 +46,9 @@ export class App extends gfx.GfxApp
 
         this.createCylinderMesh(this.cylinder, 10, 2);
 
-        this.cylinder.material = new gfx.WireframeMaterial();
+       const cylinderMaterial = new gfx.GouraudMaterial();
+       cylinderMaterial.texture = new gfx.Texture('./campbells.png');
+       this.cylinder.material = cylinderMaterial;
 
         this.scene.add(this.cylinder);
 
@@ -67,14 +69,25 @@ export class App extends gfx.GfxApp
     createCylinderMesh(mesh: gfx.Mesh3, numSegments: number, height: number){
         const vertices: gfx.Vector3[] = [];
         const indices: number[] = [];
+        const normals: gfx.Vector3[] = [];
+        const uvs: gfx.Vector2[] = [];
+
 
         const angleIncrement = (Math.PI * 2) / numSegments;
 
-        for (let i=0; i<numSegments; i++){
+        for (let i=0; i<=numSegments; i++){
             const angle = i * angleIncrement;
 
             vertices.push(new gfx.Vector3(Math.cos(angle), height/2, Math.sin(angle)));
             vertices.push(new gfx.Vector3(Math.cos(angle), -height/2, Math.sin(angle)));
+
+            normals.push(new gfx.Vector3(Math.cos(angle), 0, Math.sin(angle)));
+            normals.push(new gfx.Vector3(Math.cos(angle), 0, Math.sin(angle)));
+
+            uvs.push(new gfx.Vector2((numSegments-i)/numSegments,0));
+            uvs.push(new gfx.Vector2((numSegments-i)/numSegments,1));
+
+
 
         }
 
@@ -86,6 +99,8 @@ export class App extends gfx.GfxApp
 
         mesh.setVertices(vertices);
         mesh.setIndices(indices);
+        mesh.setNormals(normals);
+        mesh.setTextureCoordinates(uvs);
 
     }
 
